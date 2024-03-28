@@ -1,10 +1,11 @@
     #Laboratory Exercise 6, Assignment 2
 .data   
-A:          .word   86, -1, -64, -46, 40, -13, 83, 88, 58, 0, 3, -15, -45, -4, -5
+A:          .word   -6, 93, 54, 10, 79, 58, 71, 32
 Aend:       .word   
 message:    .asciiz ","
 sorted:	     .asciiz "\nSorted array:\t"
 unsorted:   .asciiz "Unsorted array:\t"
+newline:    .asciiz "\n"
 
 .text   
 main:       
@@ -87,7 +88,8 @@ end_main:
     #$v0 pointer to max element in unsorted part
     #$v1 value of max element in unsorted part
     #--------------------------------------------------------------
-sort:       
+sort:
+    la 		$a0, A       
     beq     $a0,        $a1,        done                    #single element list is sorted
     j       max                                             #call the max procedure
 after_max:  
@@ -95,6 +97,13 @@ after_max:
     sw      $t0,        0($v0)                              #copy last element to max location
     sw      $v1,        0($a1)                              #copy max value to last element
     addi    $a1,        $a1,        -4                      #decrement pointer to last element
+    
+    
+    li $v0,4
+    la $a0, newline
+    syscall
+    jal     printarray
+    	
     j       sort                                            #repeat sort for smaller list
 done:       
     j       after_sort
@@ -117,6 +126,35 @@ loop:
     bne     $t2,        $zero,      loop                    #if (next)<(max), repeat
     addi    $v0,        $t0,        0                       #next element is new max element
     addi    $v1,        $t1,        0                       #next value is new max value
+    
+
     j       loop                                            #change completed; now repeat
 ret:        
     j       after_max
+    
+    
+printarray:
+	la $t0, A		#address of A[0]
+	add $t8, $zero, $zero 	#k = 0
+	add $t2, $t2, $zero	#initialize for printing array
+	add $t3, $t3, $zero	#initialize for printing array	
+	add $t4, $t4, $zero	#initialize for printing array
+loopprint:
+	bgt $t8, $s6, exitprint	#if k >= n  then exit or for (k = 0; k < n; k++)
+	add $t2, $t8, $t8	#t2 = k+k
+	add $t2, $t2, $t2	#t2 = 4*k
+	add $t3, $t2, $t0	#t3 = address of A[k]
+	lw  $t4, 0($t3)		#t4 = A[k]
+	
+	li $v0, 1
+	move $a0, $t4
+	syscall
+	
+	li $v0, 4
+	la $a0, message
+	syscall 
+	
+	addi $t8, $t8, 1
+	j loopprint
+exitprint:	
+	jr $ra    
