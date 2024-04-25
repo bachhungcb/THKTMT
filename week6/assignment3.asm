@@ -1,6 +1,6 @@
     #Laboratory Exercise 6, Assignment 3
 .data
-A: 		.word 		68, 99, 47, 22, 87, 32, -9
+A: 		.word 		8, -1, 5, 3, -1, 10, 6
 Aend:		.word
 unsorted:	.asciiz "Unsorted array: "
 messsge:	.asciiz "Sorted array: "
@@ -34,28 +34,40 @@ loop2:
 	bge $s2, $s1, exitj	#for(j = 0; j < i; j++)
 	addi $s3, $s2, 1	#j+1
 	
-	add $t2, $s3, $s3	#t2 = (j+1)+(j+1)
-	add $t2, $t2, $t2	#t2 = 4*(j+1)
-	add $t3, $t2, $t0	#t3 = address of A[j+1]
-	lw  $t4, 0($t3)		#t4 = A[j+1]
 	
+L1:
 	add $t5, $s2, $s2	#t5 = j+j
 	add $t5, $t5, $t5	#t5 = 4*j
 	add $t6, $t5, $t0	#t6 = address of A[j]
 	lw  $t7, 0($t6)		#t7 = A[j]
 	
+
+	add $t2, $s3, $s3	#t2 = (j+1)+(j+1)
+L2:
+	add $t2, $t2, $t2	#t2 = 4*(j+1)
+	add $t3, $t2, $t0	#t3 = address of A[j+1]
+	lw  $t4, 0($t3)		#t4 = A[j+1]
+	
+        beq $t7, -1, L1
+        beq $t4, -1, L3
+	
 	sgt $s3, $t4, $t7	#s3 = (A[j] > A[j+1])? 1 : 0
 	bne $s3, $zero, exitif #if A[j] <= A[j+1] then don't swap
-	
+
+
 	sw $t7, 0($t3)		#swap A[j] and A[j+1] based on their address
 	sw $t4, 0($t6)
 	addi  $t9, $zero, 1	#swap = 1
 	
-
-	
 exitif:		
 	addi $s2, $s2, 1	#j = j+1
 	j loop2
+skip:
+	addi $s2, $s2, 1
+	j loop2
+L3:
+	addi $t2, $t2, 4
+	j L2
 exitj: 
 	
 	addi $s1, $s1, -1		# i--;

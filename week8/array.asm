@@ -6,15 +6,34 @@
 	Message2:	.asciiz "\nNhap vao so M: "
 	Message3:	.asciiz "\nPhan tu lon nhat la: "
 	Message4:	.asciiz	"\nTong trong doan tu m den M la: "
+	Message5: 	.asciiz "\nNhap vao cac phan tu cua mang: \n"
+	errorMessage1:	.asciiz "\nSo m nam ngoai pham vi cua mang\n"
+	errorMessage2:	.asciiz "\nSo M nam ngoai pham vi cua mang\n"
+	errorMessage3:	.asciiz "\nn phai la so nguyen!"
 .text
+main:
 	li $v0, 51		#input the integer n from the keyboard
 	la $a0, Message
 	syscall
+	
+	beq, $a1, $zero, nonError	#check if n is integer or char
+	li $v0, 55
+	la $a0, errorMessage3
+	syscall
+	j main				#if n is char return to main
+	
+nonError:
 	move $s0, $a0		#s0 = n (length of the given array)
 	
-	jal inputArray		#go to input array function
+	li $v0, 4		#print Nhap vao cac phan tu cua mang: 
+	la $a0, Message5
+	syscall
 	
-	jal findMax
+	jal inputArray		#go to input array function
+	nop
+	
+	jal findMax		#call the findMax function
+	nop
 	
 	li $v0, 4		#print Phan tu lon nhat la:  onto the screen
 	la $a0, Message3
@@ -24,6 +43,8 @@
  	move $a0, $s3
  	syscall 
  	
+ inputmM:
+ 
 	li $v0, 51		#input the integer m from the keyboard
 	la $a0, Message1
 	syscall
@@ -34,8 +55,12 @@
 	syscall
 	move $s2, $a0		#s2 = M
 	
-	jal findSum
-
+	jal checkError		#check if m and M is in array range
+	nop
+	
+	jal findSum		#call findSum function
+	nop
+	
 	li $v0, 4		#print Tong trong doan tu m den M la: onto the screen
 	la $a0, Message4
 	syscall
@@ -108,11 +133,11 @@ findSum:
 	xor $s4, $zero, $zero		#int sum = 0
 	xor $t0, $zero, $zero		#reset the array pointer 
 	add $t1, $zero, $s1		#index i = m
-	sll $t5, $t1, 2
-	add $t0, $t0, $t5
+	sll $t5, $t1, 2			#t5 = 4* i
+	add $t0, $t0, $t5		#t0 = t0 + t5
 
 startfindSum:
-	bgt $t1, $s2, exitfindSum	#for(int i = n; i <= M; i++)
+	bgt $t1, $s2, exitfindSum	#for(int i = m; i <= M; i++)
 	lw  $t2, arr($t0)		#t2 = arr[i]
 	
 	add $s4, $s4, $t2		#sum += arr[i]
@@ -125,6 +150,28 @@ exitfindSum:
 
 #--------------------------------------------------------
 
+#--------------------------------------------------------
+#checkError()
+#
+#
+#
+#
+
+checkError:
+	blt $s1, $s0, continuem 
+	li $v0, 4
+	la $a0, errorMessage1
+	syscall
+	j inputmM
+continuem:
+	blt $s2, $s0, endOfCheckError
+	li $v0, 4
+	la $a0, errorMessage2
+	syscall
+	j inputmM
+endOfCheckError:	
+	jr	$ra
+#--------------------------------------------------------
 
 exit:
 	li $v0, 10		#exit the program
