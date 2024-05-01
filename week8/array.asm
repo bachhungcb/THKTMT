@@ -5,7 +5,7 @@
 	Message1:	.asciiz "\nNhap vao so m: "
 	Message2:	.asciiz "\nNhap vao so M: "
 	Message3:	.asciiz "\nPhan tu lon nhat la: "
-	Message4:	.asciiz	"\nTong trong doan tu m den M la: "
+	Message4:	.asciiz	"\nSo doan tu m den M la: "
 	Message5: 	.asciiz "\nNhap vao cac phan tu cua mang: \n"
 	errorMessage1:	.asciiz "\nSo m nam ngoai pham vi cua mang\n"
 	errorMessage2:	.asciiz "\nSo M nam ngoai pham vi cua mang\n"
@@ -55,8 +55,8 @@ nonError:
 	syscall
 	move $s2, $a0		#s2 = M
 	
-	jal checkError		#check if m and M is in array range
-	nop
+	#jal checkError		#check if m and M is in array range
+	#nop
 	
 	jal findSum		#call findSum function
 	nop
@@ -132,16 +132,18 @@ endfindMax:
 findSum:
 	xor $s4, $zero, $zero		#int sum = 0
 	xor $t0, $zero, $zero		#reset the array pointer 
-	add $t1, $zero, $s1		#index i = m
+	add $t1, $zero, 0		#index i = m
 	sll $t5, $t1, 2			#t5 = 4* i
 	add $t0, $t0, $t5		#t0 = t0 + t5
 
 startfindSum:
-	bgt $t1, $s2, exitfindSum	#for(int i = m; i <= M; i++)
+	bgt $t1, $s0, exitfindSum	#for(int i = m; i <= M; i++)
 	lw  $t2, arr($t0)		#t2 = arr[i]
 	
-	add $s4, $s4, $t2		#sum += arr[i]
-		
+	blt $t2, $s1, skipCount
+	bgt $t2, $s2, skipCount
+	addi $s4, $s4, 1		#count++ 
+skipCount:		
 	addi $t0, $t0, 4		#go to the next element in array
 	addi $t1, $t1, 1		#i++;
 	j startfindSum
