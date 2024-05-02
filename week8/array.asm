@@ -55,10 +55,7 @@ nonError:
 	syscall
 	move $s2, $a0		#s2 = M
 	
-	#jal checkError		#check if m and M is in array range
-	#nop
-	
-	jal findSum		#call findSum function
+	jal findElement		#call findElement function
 	nop
 	
 	li $v0, 4		#print Tong trong doan tu m den M la: onto the screen
@@ -106,11 +103,11 @@ findMax:
 	xor $t0, $zero, $zero		#reset the array pointer 
 	xor $t1, $zero, $zero		#index i = 0
 startfindMax:
-	beq $t1, $s0, endfindMax	#for(int i = 0; i < n; i++)
+	beq $t1, $s0, endfindMax		#for(int i = 0; i < n; i++)
 	lw  $t2, arr($t0)		#t2 = arr[i]
 	
 	slt $t4, $s3, $t2		# t4 = (max < arr[i])? 1 : 0
-	beq $t4, $zero, noChange	# if t4 = 0, then max >= arr[i], then no change in max
+	beq $t4, $zero, noChange		# if t4 = 0, then max >= arr[i], then no change in max
 	move $s3, $t2
 	
 noChange:
@@ -122,22 +119,22 @@ endfindMax:
 #--------------------------------------------------------
 
 #--------------------------------------------------------
-# findSum() = a fuction to find sum from the range m and M with m and M are typed from the keyboard
+# findElement() = a fuction to find sum from the range m and M with m and M are typed from the keyboard
 # param[in] = base address of the given array
 # param[in] = $s0 length of given array
 # param[in] = $s1 = m
 # param[in] = $s2 = M
 # param[out] = $s4 = sum 
 
-findSum:
+findElement:
 	xor $s4, $zero, $zero		#int sum = 0
 	xor $t0, $zero, $zero		#reset the array pointer 
 	add $t1, $zero, 0		#index i = m
 	sll $t5, $t1, 2			#t5 = 4* i
 	add $t0, $t0, $t5		#t0 = t0 + t5
 
-startfindSum:
-	bgt $t1, $s0, exitfindSum	#for(int i = m; i <= M; i++)
+startfindElement:
+	beq $t1, $s0, exitfindElement	#for(int i = m; i <= M; i++)
 	lw  $t2, arr($t0)		#t2 = arr[i]
 	
 	blt $t2, $s1, skipCount
@@ -146,34 +143,12 @@ startfindSum:
 skipCount:		
 	addi $t0, $t0, 4		#go to the next element in array
 	addi $t1, $t1, 1		#i++;
-	j startfindSum
-exitfindSum:
+	j startfindElement
+exitfindElement:
 	jr	$ra		#return to the main function
 
 #--------------------------------------------------------
 
-#--------------------------------------------------------
-#checkError()
-#
-#
-#
-#
-
-checkError:
-	blt $s1, $s0, continuem 
-	li $v0, 4
-	la $a0, errorMessage1
-	syscall
-	j inputmM
-continuem:
-	blt $s2, $s0, endOfCheckError
-	li $v0, 4
-	la $a0, errorMessage2
-	syscall
-	j inputmM
-endOfCheckError:	
-	jr	$ra
-#--------------------------------------------------------
 
 exit:
 	li $v0, 10		#exit the program
