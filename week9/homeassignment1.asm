@@ -6,12 +6,82 @@
  
 .text 
 main: 
-          li    $a0,  0x6D            # set value for segments 
-          jal   SHOW_7SEG_LEFT          # show 
+          li    $a0,  0x3F          	# 0 
+          jal   SHOW_7SEG_LEFT          	# show 
           nop 
-          #li    $a0,  0x1F              # set value for segments 
-          #jal   SHOW_7SEG_RIGHT         # show    
-          #nop 
+         
+          li    $a0,  0X06          	# 1
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X5B          	# 2
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X4F          	# 3
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X66          	# 4
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X6D          	# 5
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X7D          	# 6 
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X07          	# 7
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X7F          	# 8 
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X6F          	# 9 
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+         li    $a0,  0X7F          	# 8 
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X07          	# 7
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X7D          	# 6
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X6D          	# 5
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X66          	# 4
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X4F        	# 3
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X5B          	# 2
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+          
+          li    $a0,  0X06          	# 1
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
+          li    $a0,  0X3F          	# 0
+          jal   SHOW_7SEG_LEFT          	# show 
+          nop 
+         
 exit:     li    $v0, 10 
           syscall 
 endmain: 
